@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equipo de Sonido</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+</head>
+<body>
+
+  <audio id="musica" loop>
+    <source src="MUSICA.mp3" type="audio/mpeg">
+  </audio>
+
+  <a-scene background="color: #0a0a0f" vr-mode-ui="enabled: false">
+
+    <!-- ASSETS PARA EL MODELO -->
+    <a-assets>
+      <a-asset-item id="modelo" src="scene.gltf"></a-asset-item>
+    </a-assets>
+
+    <!-- LUCECITAS -->
+    <a-light type="ambient" color="#FFF"></a-light>
+    <a-light type="point" intensity="1" position="2 4 4"></a-light>
+
+    <!-- MODELO GLTF -->
+    <a-entity
+      id="equipo"
+      gltf-model="#modelo"
+      position="0 -1 -8"
+      rotation="0 20 0"
+      scale="0.5 0.5 0.5"
+    ></a-entity>
+
+    <!-- BOTONCITO DE MUSICA -->
+    <a-box
+      id="boton"
+      class="clickable"
+      position="0.4 2.25 -3"
+      width="0.6"
+      height="0.2"
+      depth="0.01"
+      opacity="0"
+      color="red"
+      boton-sonido
+    ></a-box>
+    
+    <a-sky color="#FFDB73"></a-sky>
+
+    <!-- CAMARAAAA -->
+    <a-entity position="0 2 1">
+      <a-camera>
+        <a-cursor
+          color="#FF4500"
+          raycaster="objects: .clickable"
+          fuse="false"
+        ></a-cursor>
+      </a-camera>
+    </a-entity>
+
+  </a-scene>
+
+  <!-- PARA QUE SIRVA LA MUSICA -->
+  <script>
+    const audio   = document.getElementById('musica');
+    const label   = document.getElementById('label');
+    const status  = document.getElementById('status');
+    let   playing = false;
+
+    AFRAME.registerComponent('boton-sonido', {
+      init: function () {
+        const el = this.el;
+
+        el.addEventListener('mouseenter', function () {
+          label.textContent = playing ? '⏸ Pausar' : '▶ Reproducir';
+          label.classList.add('visible');
+        });
+
+        el.addEventListener('mouseleave', function () {
+          label.classList.remove('visible');
+        });
+
+        el.addEventListener('click', function () {
+          if (playing) {
+            audio.pause();
+            playing = false;
+            status.textContent = 'Música pausada';
+          } else {
+            audio.play();
+            playing = true;
+            status.textContent = '♪ Reproduciendo música...';
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
